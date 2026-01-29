@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FocusFlow - ADHD를 위한 계획 및 실행 지원 앱. 작업 분해, 타이머, 진행도 추적으로 집중력을 높이세요.">
+    <meta name="theme-color" content="#4A90E2">
+    <title>FocusFlow - ADHD 계획 및 실행 지원</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/styles/index.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <p>FocusFlow 로딩 중...</p>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1 class="app-title">FocusFlow</h1>
+                <span class="current-date" id="current-date"></span>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn mood-btn" id="mood-check-btn" aria-label="감정 체크인">
+                    😊
+                </button>
+                <button class="icon-btn settings-btn" id="settings-btn" aria-label="설정">
+                    ⚙️
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+            <!-- Content will be dynamically loaded here -->
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-view="today" aria-label="오늘">
+                <span class="nav-icon">📅</span>
+                <span class="nav-label">오늘</span>
+            </button>
+            <button class="nav-btn" data-view="tasks" aria-label="전체 작업">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">작업</span>
+            </button>
+            <button class="nav-btn" data-view="stats" aria-label="통계">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">통계</span>
+            </button>
+            <button class="nav-btn" data-view="profile" aria-label="프로필">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">프로필</span>
+            </button>
+        </nav>
+
+        <!-- Floating Action Button -->
+        <button class="fab" id="add-task-fab" aria-label="작업 추가">
+            <span class="fab-icon">+</span>
+        </button>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-container"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
