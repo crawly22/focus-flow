@@ -6,6 +6,7 @@
 import { TaskService } from '../firebase/database.js';
 import { formatTime, getPriorityLabel, calculateProgress, getPositiveFeedback, showToast } from '../utils/helpers.js';
 import { startTimer } from './Timer.js';
+import { showEditTaskModal } from './AddTaskModal.js';
 
 export function renderTaskCard(task) {
   const priority = getPriorityLabel(task.urgency || 5, task.importance || 5);
@@ -144,11 +145,10 @@ function addTaskEventListeners(card, task) {
     });
   }
 
-  // 편집 버튼 찾기 (약 145-150줄 근처)
+  // Edit button
   const editBtn = card.querySelector('[data-action="edit"]');
   if (editBtn) {
-    editBtn.addEventListener('click', async () => {
-      const { showEditTaskModal } = await import('./AddTaskModal.js');
+    editBtn.addEventListener('click', () => {
       showEditTaskModal(task);
     });
   }

@@ -16,11 +16,73 @@ import { showAddTaskModal } from './components/AddTaskModal.js';
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
+  // Global Error Handler for startup issues
+  window.onerror = function (msg, url, line, col, error) {
+    showStartupError(`Script Error: ${msg}\nLine: ${line}`);
+    return false;
+  };
+
+  window.onunhandledrejection = function (event) {
+    showStartupError(`Uncaught Promise: ${event.reason}`);
+  };
+
+  // Initialization Timeout (3 seconds) - Show Debug Info
+  setTimeout(() => {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen && loadingScreen.style.display !== 'none') {
+      const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
+      const authDomain = import.meta.env.VITE_FIREBASE_AUTH_DOMAIN;
+      const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+
+      const debugInfo = `
+        <div style="font-size: 0.8rem; text-align: left; background: #333; padding: 10px; border-radius: 5px; margin-top: 20px;">
+          <strong>Debug Info:</strong><br>
+          API Key: ${apiKey ? '✅ Loaded (' + apiKey.substring(0, 5) + '...)' : '❌ MISSING (Check Vercel Env Vars)'}<br>
+          Auth Domain: ${authDomain ? '✅ ' + authDomain : '❌ MISSING'}<br>
+          Project ID: ${projectId ? '✅ ' + projectId : '❌ MISSING'}<br>
+          Hostname: ${window.location.hostname}
+        </div>
+      `;
+
+      showStartupError('앱 초기화가 지연되고 있습니다.\n환경 변수 설정을 확인해주세요 (Debug Info 참조).');
+
+      // Add debug info to the error screen
+      const debugDiv = document.createElement('div');
+      debugDiv.innerHTML = debugInfo;
+      const container = document.querySelector('#loading-screen .text-center');
+      if (container) container.appendChild(debugDiv);
+    }
+  }, 3000);
+
   initializeApp();
 });
 
+function showStartupError(message) {
+  const loadingScreen = document.getElementById('loading-screen');
+  if (loadingScreen) {
+    if (!document.getElementById('startup-error-msg')) {
+      loadingScreen.innerHTML = `
+        <div class="text-center p-xl" style="color: var(--color-danger);">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+          <h3 style="margin-bottom: 1rem;">오류가 발생했습니다</h3>
+          <pre id="startup-error-msg" style="background: rgba(0,0,0,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; white-space: pre-wrap; word-break: break-all; font-size: 0.8rem; text-align: left;">${message}</pre>
+          <button class="btn btn-primary" onclick="location.reload()">새로고침</button>
+        </div>
+      `;
+    } else {
+      // Just update message if already showing
+      document.getElementById('startup-error-msg').textContent = message;
+    }
+  }
+}
+
 async function initializeApp() {
   console.log('🚀 FocusFlow initializing...');
+
+  // Verify Firebase Config
+  if (!import.meta.env.VITE_FIREBASE_API_KEY) {
+    throw new Error('Firebase API Key is missing. Check your .env file or Vercel Environment Variables.');
+  }
 
   // Setup auth state observer
   onAuthStateChanged(auth, async (user) => {
@@ -44,6 +106,11 @@ async function initializeApp() {
 }
 
 async function loadApp() {
+  // Restore theme
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark-mode');
+  }
+
   // Hide loading screen
   const loadingScreen = document.getElementById('loading-screen');
   const appContainer = document.getElementById('app');
